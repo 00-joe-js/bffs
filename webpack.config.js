@@ -5,7 +5,7 @@ const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin'
 const isDevelopment = process.env.NODE_ENV !== 'production';
 
 module.exports = {
-    entry: './src/index.js',
+    entry: ["@babel/polyfill", './src/index.js'],
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.js',
@@ -18,6 +18,7 @@ module.exports = {
         open: true,
         hot: true,
     },
+    devtool: "eval-cheap-module-source-map",
     mode: isDevelopment ? 'development' : 'production',
     module: {
         rules: [

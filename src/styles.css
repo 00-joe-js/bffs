@@ -14,3 +14,13 @@ body,
 body {
     background: aquamarine;
 }
+
+video {
+    background: black;
+    position: fixed;
+    top: 0;
+    left: 0;
+    min-width: 50px;
+    min-height: 50px;
+    max-width: 300px;
+}
