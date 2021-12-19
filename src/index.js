@@ -1,37 +1,42 @@
 import ReactDOM from 'react-dom';
-import React, { useRef, useEffect } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
+import React, { useRef, useEffect, Suspense } from 'react';
+import { Canvas, useFrame, useLoader, useThree, extend } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import './styles.css';
 import { Stats } from '@react-three/drei';
-import Box from './components/Box';
-
 import Peer from "peerjs";
 
+import Box from './components/Box';
+import Model from "./components/utils/GLTFModel";
+import CastleWall from "./components/environment/CastleWall";
+
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+
+const myEl = document.querySelector("#myvid");
 const vidEl = document.querySelector("#theirvid");
+
 const renderVid = (stream) => {
     vidEl.srcObject = stream;
 };
 
+
 const Scene = () => {
 
-    const light = useRef();
-
-    useFrame((_, dt) => {
-        light.current.position.x -= 1 * dt;
-    });
-
-    useEffect(() => {
+    useEffect(async () => {
         const possibleURLId = window.location.search.split("=")[1];
         const peer = new Peer(possibleURLId || null);
+
+        const myStream = await navigator.mediaDevices.getUserMedia({ video: true });
+        myEl.srcObject = myStream;
+
         peer.on("error", console.error);
-        peer.on("open", (id) => {
-            console.log(id);
+        peer.on("open", () => {
             if (!possibleURLId) {
                 const conn = peer.connect('BFFS123');
                 conn.on('open', () => {
                     peer.on("call", async call => {
-                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                        call.answer(stream);
+                        myEl.srcObject = stream;
+                        call.answer(myStream);
                         call.on("stream", renderVid);
                     });
                 });
@@ -40,8 +45,7 @@ const Scene = () => {
                 peer.on('connection', (conn) => {
                     conn.on('data', console.log);
                     conn.on('open', async () => {
-                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                        const call = peer.call(conn.peer, stream);
+                        const call = peer.call(conn.peer, myStream);
                         call.on("stream", renderVid);
                     });
                 });
@@ -51,17 +55,24 @@ const Scene = () => {
 
     return (
         <>
+            <Environment preset="forest" />
             <Stats />
-            <pointLight ref={light} position={[5, 0, 0]} intensity={100} color={"white"} />
-            <Box position={[-1.2, 0, 0]} />
-            <Box position={[1.2, 0, 0]} />
+            <color attach="background" args={['#e0b7ff']} />
+            <pointLight color="orange" intensity={0.4} position={[-20, 5, 0]} />
+            <Model url={"bookcase.glb"} modelKey={"bookcaseFilled"} position={[-25, -18, -20]} scale={[10, 10, 10]} />
+            <Box position={[-25, 5, -20]} vidEl={myEl} />
+            {/* <Box position={[2, 0, 0]} vidEl={vidEl} /> */}
+            <CastleWall position={[-30, -30, -40]} />
+            <CastleWall position={[30, -30, -40]} />
         </>
     );
 };
 
 ReactDOM.render(
     <Canvas colorManagement>
-        <Scene />
+        <Suspense fallback={null}>
+            <Scene />
+        </Suspense>
     </Canvas>
     ,
     document.getElementById('root')
