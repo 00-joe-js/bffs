@@ -5,18 +5,18 @@ export default function Box(props) {
     // This reference will give us direct access to the mesh
     const mesh = useRef();
     const [turningRight, set] = useState(true);
-    const yScale = 4;
+    const yScale = props.yScale || 4;
 
     useFrame(() => {
         let newRotation;
         if (turningRight) {
-            newRotation = mesh.current.rotation.y + .01;
-            if (newRotation > 1.2) {
+            newRotation = mesh.current.rotation.y + .0025 / 8;
+            if (newRotation > 0.1) {
                 set(false);
             }
         } else {
-            newRotation = mesh.current.rotation.y - .01;
-            if (newRotation < -0.5) {
+            newRotation = mesh.current.rotation.y - .0025 / 8;
+            if (newRotation < -0.1) {
                 set(true)
             }
         }
@@ -29,7 +29,7 @@ export default function Box(props) {
             receiveShadow={true}
             {...props}
             ref={mesh}
-            rotation={[0, 1, 0]}
+            rotation={[0, 0, 0]}
             scale={[yScale + (yScale / 9) * 7, yScale, 4]}
         >
             <planeBufferGeometry attach="geometry" args={[1, 1, 1]} />

@@ -1,10 +1,10 @@
 import React from "react";
 import { useGLTF } from "@react-three/drei";
 
-const CastleWall = ({ position }) => {
-    const {nodes} = useGLTF("wall.glb");
+const CastleWall = ({ position, scale }) => {
+    const { nodes } = useGLTF("wall.glb");
     return (
-        <group position={position} scale={[15, 15, 15]}>
+        <group position={position} scale={scale || [1, 1, 1]}>
             {nodes.wall.children.map(m => {
                 return (
                     <mesh key={m.uuid} geometry={m.geometry} material={m.material} />

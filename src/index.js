@@ -12,6 +12,9 @@ import CastleWall from "./components/environment/CastleWall";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+import _range from "range";
+const range = _range.range;
+
 const myEl = document.querySelector("#myvid");
 const vidEl = document.querySelector("#theirvid");
 
@@ -21,6 +24,15 @@ const renderVid = (stream) => {
 
 
 const Scene = () => {
+
+    const {camera, gl} = useThree();
+
+    useEffect(() => {
+        gl.physicallyCorrectLights = true;
+        camera.position.z = camera.position.z + 3;
+        camera.rotation.x = 0;
+        camera.position.y -= 3;
+    }, []);
 
     useEffect(async () => {
         const possibleURLId = window.location.search.split("=")[1];
@@ -55,15 +67,17 @@ const Scene = () => {
 
     return (
         <>
-            <Environment preset="forest" />
+            <Environment preset="sunset" />
             <Stats />
-            <color attach="background" args={['#e0b7ff']} />
-            <pointLight color="orange" intensity={0.4} position={[-20, 5, 0]} />
-            <Model url={"bookcase.glb"} modelKey={"bookcaseFilled"} position={[-25, -18, -20]} scale={[10, 10, 10]} />
-            <Box position={[-25, 5, -20]} vidEl={myEl} />
-            {/* <Box position={[2, 0, 0]} vidEl={vidEl} /> */}
-            <CastleWall position={[-30, -30, -40]} />
-            <CastleWall position={[30, -30, -40]} />
+            <pointLight position={[10, 0, -20]} color="orange" intensity={100} />
+            <Box position={[50, -5, -40]} yScale={30} vidEl={myEl} />
+            <Box position={[-25 , -10, -40]} yScale={20} vidEl={myEl} />
+            <Model url={"wallSingle_door.glb"} modelKey={"wallSingle_door"} position={[-24, -35, -35]} scale={[14, 16, 2]} />
+            <Model url={"door_gate.glb"} modelKey={"door_gate"} position={[-40, -17, -35]} scale={[17, 18, 2]} />
+            <CastleWall position={[-80, -35, -35]} scale={[14, 16, 2]} />
+            <Model url={"torchWall.glb"} modelKey={"torchWall"} position={[10, 0, -32]} scale={[7, 7, 7]} />
+            <Model url={"wall_window.glb"} modelKey={"wall_window"} position={[45, -35, -35]} scale={[14, 16, 2]} />
+
         </>
     );
 };
