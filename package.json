@@ -44,7 +44,7 @@
         "webpack-dev-server": "^3.11.0"
     },
     "scripts": {
-        "build": "webpack --mode production",
+        "build": "webpack --mode production && mv ./assets ./dist/assets",
         "d": "webpack-dev-server --mode development",
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "http-server ./dist"
