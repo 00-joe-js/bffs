@@ -22,7 +22,7 @@ module.exports = {
             app.use(express.static(path.join(__dirname, "./assets")));
         }
     },
-    devtool: "eval-source-map",
+    devtool: "cheap-module-eval-source-map",
     mode: isDevelopment ? 'development' : 'production',
     module: {
         rules: [
